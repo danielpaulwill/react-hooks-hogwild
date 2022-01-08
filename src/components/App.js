@@ -6,19 +6,47 @@ import CardList from "./CardList";
 import hogs from "../porkers_data";
 
 function App() {
-	const [hogsList, setHogsList] = useState(hogs)
-	const [isGreasedSearch, setIsGreasedSearch] = useState('Both')
+	const [greasedCheck, setGreasedCheck] = useState(false)
+	const [nameSort, setNameSort] = useState(false)
 	
-	function handleOnGreasedChange(e) {
-		setIsGreasedSearch(e.target.value)
+	const sortedHogs = hogs.filter((hog) => {
+		if (greasedCheck === false) {
+			return hog
+		} else if (greasedCheck === hog.greased) {
+			return hog
+		}
+	})
+	const [hogsList, setHogsList] = useState(sortedHogs)
+
+console.log(hogsList)
+	function onGreasedChange() {
+		setGreasedCheck(() => !greasedCheck)
+		setHogsList(hogs.filter((hog) => {
+			if (greasedCheck === true) {
+				return hog
+			} else if (greasedCheck === !hog.greased) {
+				return hog
+			}
+		}))
 	}
+
+	function onNameSort() {
+		setNameSort(() => !nameSort)
+		// setHogsList(sortedHogs.name.sort())
+	}
+
+	// const hogListYo = hogs.filter((hog) => (greasedCheck === hog.greased) ? hog)
 
 	return (
 		<div className="App">
 			<Nav />
-			<Search onGreasedChange={handleOnGreasedChange} />
+			<Search 
+				greasedCheck={greasedCheck} 
+				handleToggle={onGreasedChange} 
+				handleNameSort={onNameSort}
+				nameSort={nameSort} />
 			<br></br>
-			<CardList hogs={hogsList} greasedFilter={isGreasedSearch} />
+			<CardList hogsList={hogsList} greasedCheck={greasedCheck} />
 		</div>
 	);
 }
